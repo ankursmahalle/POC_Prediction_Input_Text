@@ -32,38 +32,40 @@ win.geometry("%dx%d" % (width, height))
 # win.geometry("1500x550")
 
 # Main Page Label(Prediction)
-label = tk.Label(text="Prediction", font=("Courier", 16, "bold"), fg="")
-label.place(x=1, y=1)
-label.pack()
+# label = tk.Label(text="Prediction", font=("Courier", 16, "bold"))
+# label.place(x=1, y=1)
+# label.pack()
+
+topmargin = 20
+leftmargin = 20
 
 # Enter Message Lable
 label1 = tk.Label(
-    win, text="Enter Message With Values:", fg="brown", font=("Courier", 12)
+    win, text="Enter message with values:", fg="black", font=("Courier", 12)
 )
-label1.place(x=5, y=1)
+label1.place(x=15 + leftmargin, y=1 + topmargin)
 
 
 # Enter Message Textbox
 text = tk.Text(win, width=50, height=4)
-text.place(x=20, y=30)
+text.place(x=20 + leftmargin, y=30 + topmargin)
 # text.pack()
 
 var = tk.StringVar()
 
 # Label for Flashing the prediction results
 label2 = tk.Label(win, textvariable=var, font=("Courier", 12, "bold"), fg="Orange")
-label2.place(x=450, y=80)
+label2.place(x=450 + leftmargin, y=80 + topmargin)
 
 message1 = tk.Message(
     win,
     text="Message format to predict the Diabetes:",
     font=("Courier", 8),
-    fg="blue",
+    fg="black",
     justify="left",
     width=400,
-    highlightbackground="yellow",
 )
-message1.place(x=20, y=100)
+message1.place(x=15 + leftmargin, y=100 + topmargin)
 
 message2 = tk.Message(
     win,
@@ -72,9 +74,8 @@ message2 = tk.Message(
     fg="black",
     justify="left",
     width=400,
-    background="#FFF8DC",
 )
-message2.place(x=20, y=120)
+message2.place(x=15 + leftmargin, y=120 + topmargin)
 
 
 def submit():
@@ -103,6 +104,11 @@ def submit():
     dpf = 0.351
     age = 32
     sent = text.get("1.0", "end")
+    if sent == "\n":
+        label2["fg"] = "black"
+        label2["font"] = ("Courier", 10)
+        var.set("Enter some text")
+        return
     myList = word_tokenize(sent)
     print("myList ==>>", myList)
     # TODO :: Add here the process 'myList' to get the values
@@ -220,24 +226,25 @@ def submit():
     rfc.fit(X_train, y_train)
 
     f, ax = plt.subplots()
+    plt.rc("axes", titlesize=10)
     rfc.feature_importances_
     (
         pd.Series(rfc.feature_importances_, index=X.columns).plot(
             kind="barh",
             title="Below graph shows all the available features and their importance in the dataset.",
             fontsize=7,
-            color="#F4A460",
+            color="#7D7D7D",
         )
     )
 
     global canvas
     canvas = FigureCanvasTkAgg(f, win)
     canvas.draw()
-    canvas.get_tk_widget().place(x=20, y=400)
+    canvas.get_tk_widget().place(x=20 + leftmargin, y=400 + topmargin)
     canvas.get_tk_widget().pack()
-    # toolbar = NavigationToolbar2Tk(canvas, win)
-    # toolbar.update()
-    canvas._tkcanvas.place(x=20, y=180, width=800, height=400)
+    toolbar = NavigationToolbar2Tk(canvas, win)
+    toolbar.update()
+    canvas._tkcanvas.place(x=20 + leftmargin, y=180 + topmargin, width=800, height=400)
 
 
 # Predict Diabetes Button
@@ -247,9 +254,8 @@ button = tk.Button(
     foreground="black",
     font=("Courier", 10, "bold"),
     command=submit,
-    bg="#F0E68C",
 )
-button.place(x=450, y=30)
+button.place(x=450 + leftmargin, y=30 + topmargin)
 # button.pack()
 
 
@@ -261,11 +267,10 @@ def reset():
 
 
 # Reset Button
-button2 = tk.Button(
-    win, text="RESET", font=("Courier", 10, "bold"), bg="#F0E68C", command=reset
-)
-button2.place(x=1200, y=600)
+button2 = tk.Button(win, text="RESET", font=("Courier", 10, "bold"), command=reset)
+button2.place(x=1200, y=570)
 
+win.resizable(0, 0)
 # title for GUI Frame
-win.title("AI-ML POC")
+win.title("AI POC")
 win.mainloop()
